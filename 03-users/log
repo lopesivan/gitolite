@@ -1,0 +1,96 @@
+echo =============================================================
+#copia id_rsa_maudog.pub para o servidor X
+scp id_rsa_maudog.pub servidor_X:~/
+echo =============================================================
+
+
+
+echo =============================================================
+# cria user maudog sem senha no servidor_X
+#maudog
+sudo adduser --gecos 'Short description of maudog' --disabled-password maudog
+sudo usermod -a -G sudo maudog
+echo "maudog ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+sudo mkdir /home/maudog/.ssh
+sudo cp id_rsa_maudog.pub /home/maudog/.ssh/authorized_keys
+sudo usermod -aG docker maudog
+sudo chown maudog:maudog -R /home/maudog/.ssh
+echo =============================================================
+
+
+
+echo =============================================================
+# Habilitando o X via ssh no usuário maudog, em /home/maudog
+# xauth with complain unless /home/ivan/.Xauthority exists
+touch /home/ivan/.Xauthority
+xauth generate :0 . trusted
+xauth add ${HOST}:0 . $(xxd -l 16 -p /dev/urandom)
+echo =============================================================
+
+
+
+echo =============================================================
+# Create a user without login
+sudo groupadd slocal
+sudo useradd -g slocal -d /opt/maudog -s /bin/false maudog
+sudo usermod -G slocal maudog
+sudo mkdir /opt/maudog
+sudo touch /opt/maudog/maudog-server-log
+sudo touch /opt/maudog/maudog-server-errors
+sudo chown -R maudog:slocal /opt/maudog
+echo =============================================================
+
+
+echo =============================================================
+sudo addapp --gecos 'Maudog Short description' --disabled-password --home /opt/maudog maudog
+echo =============================================================
+
+
+echo =============================================================
+#copia id_rsa_bomdog.pub para o servidor X
+scp id_rsa_bomdog.pub servidor_X:~/
+echo =============================================================
+
+
+
+echo =============================================================
+# cria user bomdog sem senha no servidor_X
+#bomdog
+sudo adduser --gecos 'Short description of bomdog' --disabled-password bomdog
+sudo usermod -a -G sudo bomdog
+echo "bomdog ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+sudo mkdir /home/bomdog/.ssh
+sudo cp id_rsa_bomdog.pub /home/bomdog/.ssh/authorized_keys
+sudo usermod -aG docker bomdog
+sudo chown bomdog:bomdog -R /home/bomdog/.ssh
+echo =============================================================
+
+
+
+echo =============================================================
+# Habilitando o X via ssh no usuário bomdog, em /home/bomdog
+# xauth with complain unless /home/ivan/.Xauthority exists
+touch /home/ivan/.Xauthority
+xauth generate :0 . trusted
+xauth add ${HOST}:0 . $(xxd -l 16 -p /dev/urandom)
+echo =============================================================
+
+
+
+echo =============================================================
+# Create a user without login
+sudo groupadd slocal
+sudo useradd -g slocal -d /opt/bomdog -s /bin/false bomdog
+sudo usermod -G slocal bomdog
+sudo mkdir /opt/bomdog
+sudo touch /opt/bomdog/bomdog-server-log
+sudo touch /opt/bomdog/bomdog-server-errors
+sudo chown -R bomdog:slocal /opt/bomdog
+echo =============================================================
+
+
+echo =============================================================
+sudo addapp --gecos 'Bomdog Short description' --disabled-password --home /opt/bomdog bomdog
+echo =============================================================
+
+

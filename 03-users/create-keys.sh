@@ -38,6 +38,14 @@ for u in "$@"; do
   user=$u
 
   echo echo =============================================================
+  echo '#'copia id_rsa_$u.pub para o servidor X
+  echo scp id_rsa_$u.pub servidor_X:~/
+  echo echo =============================================================
+  echo
+  echo
+  echo
+  echo echo =============================================================
+  echo '#' cria user $user sem senha no servidor_X
   group=$user
   echo '#'$user
   #echo sudo groupadd ${group}
@@ -53,15 +61,13 @@ for u in "$@"; do
   echo
   echo
   echo
-  echo
   echo echo =============================================================
+  echo '#' Habilitando o X via ssh no usuário $user, em /home/$user
   echo '#' xauth with complain unless ~/.Xauthority exists
   echo touch ~/.Xauthority
   echo xauth generate :0 . trusted
   echo xauth add \${HOST}:0 . \$\(xxd -l 16 -p /dev/urandom\)
   echo echo =============================================================
-  echo
-  echo
   echo
   echo
   echo
