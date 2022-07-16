@@ -1,0 +1,46 @@
+version: '2'
+
+services:
+
+  gitolite:
+    image: jgiannuzzi/gitolite
+    #image: ${OWNER}/${NAME}:${VERSION}
+    
+ #  build:
+ #    context: .
+ #    dockerfile: Dockerfile.${NAME}
+ #    args:
+ #      BUILD_DATE: ${DATE}
+ #      VERSION: ${VERSION}
+
+   #restart: always
+
+    # Name    
+    container_name: ${CONTAINER_NAME}
+    # 
+    # argumento para ./entrypoint.sh ARGV   
+    command: sshd
+
+    ports:
+      - "8877:22"
+
+    volumes:
+      - /home/ivan/gitolite/keys:/etc/ssh/keys
+      - /home/ivan/gitolite/git:/var/lib/git
+#    volumes:
+#      - ${PWD}/keys:/etc/ssh/keys
+#      - ${PWD}/git:/var/lib/git
+
+    env_file: env.production
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 1000M
+    cpu_quota: 5000
+    cap_add:
+      - IPC_LOCK
